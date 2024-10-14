@@ -1,0 +1,43 @@
+/*over-ride*/
+.sidebar-wrapper .sidebar-header img{
+    min-height: 4.2rem;
+}
+.my-profile{
+    float: right;
+}
+.watch-list-waitingon h6{
+    display: inline-block;
+}
+.watch-list .overall-status{
+    font-size: 1rem;
+}
+.overall-status-0{
+    /*gray*/
+    color: #808080;
+}
+.overall-status-1{
+    /*red*/
+    color: #D14F57;
+}
+.overall-status-2{
+    /*yellow*/
+    color: #FFFF00;
+}
+.overall-status-3{
+    /*green*/
+    color: #4CB581;
+}
+.logo img{
+    max-width: 200px;
+    max-height: 200px;
+}
+.profile-wrap{
+    text-align: right;
+    padding-bottom: 15px;
+}
+#main{
+    padding: 1rem 2rem 2rem 2rem;
+ }
+.watch-list .card-content span{
+    padding: 0 15px;
+}

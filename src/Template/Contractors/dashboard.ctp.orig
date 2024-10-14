@@ -1,0 +1,606 @@
+<?php
+use Cake\Core\Configure;
+$uploaded_path = Configure::read('uploaded_path');
+
+$this->assign('title', 'Dashboard');
+?>
+<div class="row contractors">
+	<div class="col-lg-4">
+
+	<div class="card">
+	<div class="card-header">
+		<strong>Contractor Info</strong>
+	</div>
+	<div class="card-body card-block" >
+		<table class="table table-responsive">
+		<tr>
+			<th scope="row"><?= __('Company') ?></th>
+			<td><?= h($contractor->company_name) ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Primary Contact') ?></th>
+			<td><?= h($contractor->pri_contact_fn).' '.h($contractor->pri_contact_ln) ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Email') ?></th>
+			<td style="word-wrap: anywhere;"><?= h($contractor->user->username) ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Phone') ?></th>
+			<td><?= h($contractor->pri_contact_pn) ?></td>
+		</tr>
+		</table>
+	</div>
+	</div><!-- card -->
+
+	<div class="card">
+	<div class="card-header">
+		<strong>Customer Service</strong>
+	</div>
+	<div class="card-body card-block">
+		<table class="table table-responsive">
+		<?php foreach ($customer_rep as $crp) : ?>
+		<tr>
+			<td>
+			<div><?= $crp->pri_contact_fn .' '.$crp->pri_contact_ln  ?></div>
+			<div><b>Phone : </b><?= $crp->pri_contact_pn ?> &nbsp;&nbsp;&nbsp;<b>Ext. : </b><?= $crp->extension ?></div>
+			<b>Email : </b><a href="mailto:<?= $crp->user->username ?>" target="_top"><?= $crp->user->username ?></a>
+			</td>
+		</tr>
+		<?php endforeach;?>
+		<tr>
+			<td>
+			<div>General Customer Service</div>
+			<div><b>Phone :</b> <?= Configure::read('customer_service.phone_no');?></div>
+			</td>
+		</tr>
+		</table>
+	</div>
+	</div><!-- card -->
+	</div>
+
+	<div class="col-lg-4">
+	<div class="card">
+	<div class="card-header">
+		<strong>Contractor Status</strong>
+	</div>
+	<div class="card-body card-block">
+		<table class="table table-responsive">
+		<tr>
+			<th scope="row"><?= __('Safety Sensitive') ?></th>
+			<td><?= $contractor->is_safety_sensitive ? __('Yes') : __('No'); ?></td>
+		</tr>
+		<!--<tr>
+			<th scope="row"><?= __('NAICS (Primary) ') ?></th>
+			<td><?= h($contractor->pri_contact_pn) ?></td>
+		</tr>-->
+		<!--<tr>
+			<th scope="row"><?= __('Last Login') ?></th>
+			<td><?php echo $activeUser['last_login']; ?></td>
+		</tr>-->
+		<?php if($contractor->payment_status) { ?>
+		<tr>
+			<th scope="row"><?= __('Member Since') ?></th>
+			<td><?= !empty($contractor->payments) ? date('n/d/Y', strtotime($contractor->payments[0]->created)) : '' ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Subscription Date') ?></th>
+			<td><?= date('n/d/Y', strtotime($contractor->subscription_date)) ?></td>
+		</tr>
+		<?php
+		}
+		if(isset($activeUser) && $activeUser['role_id'] == SUPER_ADMIN) {?>
+		<tr>
+			<th scope="row"><?= __('Account') ?></th>
+			<td>
+				<?= $this->Form->create($contractor) ?>
+				<?php echo $this->Form->control('is_locked', ['onclick'=>"this.form.submit();"]); ?>
+				<?= $this->Form->end() ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Status') ?></th>
+			<td>
+				<?= $this->Form->create($contractor) ?>
+				<?php echo $this->Form->control('user.active', ['required'=>false, 'onclick'=>"this.form.submit();"]); ?>
+				<?php echo $this->Form->control('user.username', ['type'=>'hidden']); ?>
+				<?= $this->Form->end() ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Waiting On') ?></th>
+			<td>
+				<?= $this->Form->create($contractor) ?>
+				<?php echo $this->Form->control('waiting_on', ['options'=>$waiting_on, 'label'=>false, 'empty'=>false, 'onchange'=>"this.form.submit();"]); ?>
+				<?= $this->Form->end() ?>
+			</td>
+		</tr>
+		<?php } else { ?>
+		<tr>
+			<th scope="row"><?= __('Status') ?></th>
+			<td><?= $contractor->user->active ? __('Active') : __('Inactive'); ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Waiting On') ?></th>
+			<td><?= h($contractor->waiting_on) ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?= __('Account') ?></th>
+			<td><?= $contractor->is_locked ? __('Locked') : __('Unlocked'); ?></td>
+		</tr>
+		<?php } ?>
+		</table>
+	</div>
+	</div><!-- card -->
+
+	<?php if($contractor->payment_status) { ?>
+	<div class="card">
+	<div class="card-header">
+		<strong>Membership Certificate & Badge</strong>
+	</div>
+	<div class="card-body card-block">
+		<ul>
+		<li>
+			<span data-container="body" data-toggle="popover" data-placement="top" data-content="Your company has authorization to use this certificate on all company marketing materials, website, proposals and more" data-original-title="" title=""><i class="fa fa-info-circle"></i></span>
+			<?= $this->Html->link('Canqualify Certificate',['controller'=>'Contractors','action'=>'toCertify',$contractor->id]) ?>
+			
+		</li>
+		<li>
+			<span data-container="body" data-toggle="popover" data-placement="top" data-content="Your company has authorization to use this badge on all company marketing materials, website, proposals and more" data-original-title="" title=""><i class="fa fa-info-circle"></i></span>
+			<a href="<?= $uploaded_path.'canqualify_badge.jpg' ?>" target="_Blank">Canqualify Badge</a>
+		</li>
+		</ul>
+	</div>
+	</div><!-- card -->
+	<?php
+	}
+	?>
+	</div>
+
+	<div class="col-lg-4">
+	<div class="card">
+	<div class="card-header">
+		<strong>Open Tasks</strong>
+	</div>
+	<div class="card-body card-block">
+<<<<<<< HEAD
+		<?php						
+		if($contractor->subscription_date!=null){
+=======
+	<?php 
+	if($contractor->payment_status) { 
+>>>>>>> 00f78a212736f09f1267ad5a889a14cb326b7804
+		$subscription_date = date('Y-m-d', strtotime($contractor->subscription_date));
+		$dt = date('Y-m-d', strtotime("+90 days"));	
+		$openTask = false;
+<<<<<<< HEAD
+			if($subscription_date <= $dt)
+			{ 
+			echo $this->Html->link('Renew Your Subscription', ['controller'=>'payments', 'action'=>'renewSubscription'], ['escape'=>false, 'title'=>'subscription']);
+			$openTask =true;
+			}
+=======
+		if($subscription_date <= $dt)
+		{ 
+			echo '<p>'.$this->Html->link('Renew Your Subscription', ['controller'=>'payments', 'action'=>'renewSubscription'], ['escape'=>false, 'title'=>'subscription']).'</p>';
+			$openTask =true;
+>>>>>>> 00f78a212736f09f1267ad5a889a14cb326b7804
+		}
+	}
+	else {
+		echo '<p>'.$this->Html->link('Pay now to become a member', ['controller'=>'contractor-sites', 'action'=>'add'], ['escape'=>false, 'title'=>'Site Add']).'</p>';
+	}
+$total_complete = true;
+		if($contractor->waiting_on=='Contractor') { 
+		$openTask =true; ?>
+		<ul class="open_tasks nav navbar-nav">		
+			<?php $services = $this->Category->getServices($activeUser['contractor_id']);			
+			foreach ($services as $service) {
+			if($service['id']==4) { 
+			continue; // skipping employeeQual
+			}
+			$final_submit = true;
+			if(!empty($service['categories'])) {
+			$categories = $this->Category->getCategories($activeUser, $service['id'], false);			
+			foreach($categories as $cat) {
+				if($cat['getPerc'] !='100%') { $final_submit = false; 
+				$total_complete=false;
+				break;
+				}
+			}
+			if($final_submit){
+			continue; // continue services loop
+			}
+			?>
+			<li class="menu-item-has-children dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= $service['name'] ?></a>
+				<?php
+				$catname='';
+				if($service['id']==1) { //'DocuQUAL'
+				$firstCatId = $service['categories'][0]['id'];
+				?>
+				<ul class="sub-menu children dropdown-menu">
+				
+					<li><?= $is_client == 1 ? 'Complete Pre-Qualification Form' : $this->Html->link(__('Complete Pre-Qualification Form'), ['controller'=>'contractor-answers', 'action'=>'addAnswers', $service['id'],$firstCatId], ['escape'=>false, 'title'=>'Complete Pre-Qualification Form']) ?></li>
+				</ul>
+				<?php
+				continue; // continue services loop
+				}
+				?>
+
+				<ul class="sub-menu children dropdown-menu">
+				<?php
+				$i=0;
+				foreach($categories as $cat) {
+				if(!empty($cat['childrens'])) {
+					foreach ($cat['childrens'] as $key=>$value) {
+					foreach ($value['cat'] as $childcats) {
+					?>
+						<li><?= $is_client == 1 ? "Complete ".$key." ".$childcats['name'] : $this->Html->link(__("Complete ".$key." ".$childcats['name']), ['controller'=>'contractor-answers', 'action'=>'addAnswers', $service['id'], $childcats['id'], $key], ['escape'=>false, 'title'=>'categories']) ?></li>
+					<?php
+					}
+					}
+				}
+				elseif(!empty($cat['child'])) {
+				foreach ($cat['child'] as $key=>$value) { ?>
+					<li><?= $is_client == 1 ? "Complete ".$value['name'] : $this->Html->link(__('Complete '.$value['name']), ['controller'=>'contractor-answers', 'action'=>'addAnswers', $service['id'], $value['id']], ['escape'=>false, 'title'=>'categories']) ?></li>
+				<?php 
+				}
+				}
+				else { ?>
+					<li><?= $is_client == 1 ? $cat['name'] : $this->Html->link(__($cat['name']), ['controller'=>'contractor-answers', 'action'=>'addAnswers', $service['id'], $cat['id']], ['escape'=>false, 'title'=>'categories']) ?></li>
+				<?php
+				}
+				}
+				?>
+				</ul><!-- sub-menu -->
+			</li><!-- menu-item-has-children -->
+			<?php
+			}
+			elseif (!empty($service['id']) && $service['id'] == 4) { ?>
+				<li class="menu-item-has-children dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= $service['name'] ?></a>
+					<ul class="sub-menu children dropdown-menu">
+						<li><?= $this->Html->link(__('Add Employee'), ['controller'=>'employees', 'action'=>'index', $service['id']], ['escape'=>false, 'title'=>'Add Employee']) ?></li>
+					</ul>
+				</li>
+			<?php } } ?>		
+		</ul>
+		<?php }			
+		if($total_complete) { ?>
+		<?= $is_client == 1 ? 'Please Submit Your Data' : $this->Html->link(__('Please Submit Your Data'), ['controller'=>'contractor-answers', 'action'=>'final-submit', 6], ['escape'=>false, 'title'=>'Final submit']) ?>
+		<?php			
+		}			
+		if(!$openTask){
+		?>
+		<span style="">No Open Tasks!</span>
+		<?php }	?>
+	</div><!-- card -->
+	</div>
+	</div>
+
+	<div class="col-lg-6">
+	<div class="card">
+	<div class="card-header">
+		<strong>Client Matrix</strong>
+	</div>
+	<div class="card-body card-block">
+		<table class="table table-responsive">
+		<tr>
+			<th scope="row"><?= __('Client') ?></th>
+			<th scope="row"><?= __('Category') ?></th>
+			<th scope="row"><?= __('Status') ?></th>
+			<?php if(!empty($allowForceChange)) { ?><th scope="row"><?= __('Force Change') ?></th><?php } ?>
+			<th scope="row"><?= __('Download PQF') ?></th>
+		</tr>
+		<?php
+		foreach ($matrix as $val) { ?>
+		<tr>
+			<td><?= $val->has('client') ? $val->client->company_name : '' ?></td>
+			<td><?= $val->has('benchmark') ? $val->benchmark->category : $val->category ?></td>
+			<td><i class="fa fa-circle color-<?= $val->icon ?>"></i></td>
+			<?php if(!empty($allowForceChange)) { ?>
+				<td><?= $this->Html->link(__('<i class="fa fa-pencil"></i>'), ['controller'=>'OverallIcons', 'action'=>'force-change', $val->client_id, $val->contractor_id], ['class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal', 'escape'=>false, 'title'=>'Safety Report']) ?></td>
+			<?php } ?>
+			<td><?= $this->Html->link(__('<i class="fa fa-download"></i>'), ['controller'=>'ContractorAnswers', 'action'=>'downloadPqf', $val->client_id], ['class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal', 'escape'=>false, 'title'=>'Download PQF']) ?></td>
+		</tr>
+		<?php
+		}
+		?>
+		</table>
+	</div>
+	</div><!-- card -->
+	</div>
+
+	<?php if($activeUser['role_id'] == SUPER_ADMIN || $activeUser['role_id'] == CLIENT) { ?>
+	<!--Rate and Write a Review-->
+	<div class="col-lg-6">
+	<div class="card">
+	<div class="card-header">
+		<strong>Rate and Write a Review</strong>
+		<?= $allReviewCnt > 3 ?  $this->Html->link(__('View All'), ['controller'=>'Reviews', 'action'=>'index'], ['class'=>'ajaxmodal pull-right', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal', 'escape'=>false, 'title'=>'Review']) : '' ?>
+	</div>
+	<?php 
+	if($allReviewCnt!=null)
+	{ ?>
+		<div class="card-header">
+		<?php 
+			$avg=($overallReview / $allReviewCnt);
+			echo "Overall Rating : ";
+		   		$starNumber = $avg;
+				for ($x = 1; $x <= $starNumber; $x++) { echo '<i class="fa fa-star glow"></i>';}
+				if (strpos($starNumber, '.')) { echo '<i class="fa fa-star-half-o glow"></i>'; $x++;}
+				while ($x <= 5) { echo '<i class="fa fa-star-o"></i>'; $x++; }
+		?>	
+		</div>
+		<?php 
+		}
+		?>
+	
+		<div class="card-body card-block">
+		<?php if($client_id!=null && $reviewcnt == 0) {
+			echo '<p>'.$this->Html->link(__('Rate and Write a Review'), ['controller'=>'Reviews', 'action'=>'add'], ['class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal', 'title'=>'Rate and Write a Review']).'</p>';
+		} ?>
+		<table class="table table-responsive">
+		<tr>
+			<th scope="row" width="100"><?= __('Rating') ?></th>
+			<th scope="row"><?= __('Review') ?></th>
+			<th scope="row"><?= __('Author') ?></th>
+		</tr>
+		<?php foreach ($reviewRate as $review) { ?>
+		<tr>
+		<td>
+		<?php
+			$id =$review->id;
+			$rate =$review->rating;
+			$starNumber = $rate;
+			for ($x = 1; $x <= $starNumber; $x++) { echo '<i class="fa fa-star glow"></i>';}
+			if (strpos($starNumber, '.')) { echo '<i class="fa fa-star-half-o glow"></i>'; $x++;}
+			while ($x <= 5) { echo '<i class="fa fa-star-o"></i>'; $x++; }
+		?>
+		</td>
+		<td>
+		<?php
+			$string = $review->reviewtxt;
+			if (strlen($string) > 60) {
+			$trimstring = substr($string, 0, 60).$this->Html->link(__(' Read More..'), ['controller'=>'Reviews', 'action'=>'review',$review->id], ['class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal', 'escape'=>false, 'title'=>'Review']);
+			} else {
+			$trimstring = $string;
+			}
+			echo $trimstring;
+			?>
+		</td>
+		<td><i><?= $review->has('client') ? $review->client->company_name : '' ?></i></td>
+		</tr>
+		<?php
+		}
+		?>
+		</table>
+		</div>
+	</div><!-- card -->
+	</div>
+	<?php } ?>
+
+	<?php if($enable_signedDoc > 0) { ?>
+	<div class="col-lg-6">
+	<div class="card">
+	<div class="card-header">
+		<strong>Signed Documents</strong>
+		<?php if($activeUser['role_id'] == CLIENT){
+			echo $this->Html->link(__('Add New'), ['controller'=>'Documents', 'action'=>'add'], ['class'=>'ajaxmodal btn btn-sm btn-success pull-right', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal', 'escape'=>false, 'title'=>'Documents']);
+		} ?>
+		<!--<div class="pull-right">
+			<span class="badge badge-success">Contractor</span> &nbsp;
+			<span class="badge badge-primary">Client</span> &nbsp;
+		</div>-->
+	</div>
+	<div class="card-body card-block">
+	<?php
+	if(!empty($documents)) {
+	foreach ($documents as $client) { ?>
+		<div style="margin:10px 5px"><strong>Client:</strong> <?= $client['company_name'] ?></div>
+		<table class="table">
+		<tr>
+			<th scope="row"><?= __('Document Name') ?></th>
+			<th scope="row"><?= __('version / Accepted By') ?></th>
+			<th scope="row"><?= __('Upload') ?></th>
+			<th scope="row"><?= __('Accept') ?></th>
+			<th scope="row"><?= __('Uploaded By') ?></th>
+		</tr>
+		<?php
+		if(!empty($client['documents'])) {
+		foreach ($client['documents'] as $document) {
+		?>
+		<tr>
+			<td><a href="<?php echo $uploaded_path.$document['document']?>" target="_Blank"><?php echo $document['name']?></a></td>
+			<td><?php echo $document['doc_version']!='' ? $document['doc_version']: '' ?> </td>
+			<td><?= empty($document['childrens']) && $document['status']==0 ? $this->Html->link(__('<i class="fa fa-upload"></i>'), ['controller'=>'Documents', 'action'=>'add', $document['id'], $client['id']],['escape'=>false, 'class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']) : '' ?></td>
+			<td>
+			<?php
+			if($document['status']==2) {
+				echo '<strong>Accepted</strong>';
+			}
+			elseif(empty($document['childrens'])) { // not childrens and not accepted
+				if($activeUser['role_id'] == CLIENT && $document['user']['role_id']!=CLIENT) {
+					echo $this->Html->link(__('Accept'), ['controller'=>'Documents', 'action'=>'approve', $document['id'], $client['id']],['escape'=>false, 'class'=>'ajaxmodal btn btn-sm btn-info', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']);
+				}
+				if($activeUser['role_id'] == CONTRACTOR) {
+					echo $this->Html->link(__('Accept'), ['controller'=>'Documents', 'action'=>'approve', $document['id'], $client['id']],['escape'=>false, 'class'=>'ajaxmodal btn btn-sm btn-success', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']);
+				}
+			}
+			?>
+			</td>
+			<td><?= $document['user']['client']['company_name'] ?></td>
+		</tr>
+		<?php
+		if(isset($document['childrens'])){
+		$last = array_keys($document['childrens']);
+		$last = end($last);
+		foreach ($document['childrens'] as $k => $child) {
+		?>
+		<tr>
+			<td><a href="<?= $uploaded_path.$child['document']?>" target="_Blank"><?= $document['name'] ?></a></td>
+			<td>
+			<?php
+			if($child['doc_version']=='' && ($child['status']==1 || $child['status'] == 2)) {
+				echo $child['user']['role']['role_title'];
+			}
+			else {
+				echo $child['doc_version'];
+			}
+			?>
+			</td>
+			<td><?= $last==$k && $child['status']==0 ? $this->Html->link(__('<i class="fa fa-upload"></i>'), ['controller'=>'Documents', 'action'=>'add', $document['id'], $client['id']],['escape'=>false, 'class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']) : '' ?></td>
+			<td>
+			<?php
+			if($child['status']==2) {
+				echo '<strong>Accepted</strong>';
+			}
+			elseif($last==$k) { //echo 'last vesion and not accepted';
+				if($activeUser['role_id'] == CLIENT && $child['user']['role_id']!= CLIENT) {
+					echo $this->Html->link(__('Approve'), ['controller'=>'Documents', 'action'=>'approve', $document['id'], $client['id']],['escape'=>false, 'class'=>'ajaxmodal btn btn-sm btn-info', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']);
+				}
+				if($activeUser['role_id'] == CONTRACTOR && $child['user']['role_id']!= CONTRACTOR) {
+					echo $this->Html->link(__('Accept'), ['controller'=>'Documents', 'action'=>'approve', $document['id'], $client['id']],['escape'=>false, 'class'=>'ajaxmodal btn btn-sm btn-success', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']);
+				}
+			}
+			?>
+			</td>										
+			<td>
+			<?php if(!empty($child['user']['client'])) {									
+				echo $child['user']['client']['company_name'];
+			}
+			else {
+				echo $child['user']['contractor']['company_name'];
+			}
+			?>
+			</td>
+		</tr>
+		<?php
+		}
+		} // isset($document['childrens']
+		}
+		} // !empty($client['documents']
+		?>
+		</table>
+	<?php
+	}
+	}
+	?>
+	</div>
+	</div><!-- card -->
+	</div>
+	<?php }  ?>
+
+	<div class="col-lg-6">
+	<div class="card">
+		<div class="card-header">
+			<strong>Client Forms & Docs</strong>
+		</div>
+		<div class="card-body card-block">
+		<?php
+		foreach ($acceptedDocuments as $client) { ?>
+		<div style="margin:10px 5px">
+			<strong>Client:</strong> <?= $client['company_name'] ?>
+		</div>
+		<table class="table">
+		<tr>
+			<th scope="row"><?= __('Document Name') ?></th>			
+			<th scope="row"><?= __('Status') ?></th>
+			<th scope="row"><?= __('Uploaded By') ?></th>
+		</tr>
+		<?php		
+		foreach ($client['documents'] as $document) {			 
+			if(isset($document['accepted'])){
+			foreach ($document['accepted'] as $k => $child) { ?>
+			<tr>
+				<td><a href="<?= $uploaded_path . $child['document'] ?>" target="_Blank"><?= $document['name'] ?></a></td>
+				<td><strong>Final</strong></td>
+				<td>
+				<?php if(!empty($child['user']['client'])) {
+					echo $child['user']['client']['company_name'];
+				} else {
+					echo $child['user']['contractor']['company_name'];
+				}
+				?>
+				</td>
+			</tr>
+			<?php				
+			}
+			} 
+		}								
+		?>
+		</table>
+		<?php
+		}
+		?>
+	</div><!-- card -->
+	<div class="card-body card-block" style="display:none">
+		<table class="table">
+		<tr>
+			<th scope="row"><?= __('Client Name') ?></th>
+			<th scope="row"><?= __('Document Name') ?></th>
+			<th scope="row"><?= __('Download') ?></th>
+			<?php if(isset($activeUser) && ($activeUser['role_id'] == CONTRACTOR || $activeUser['role_id'] == SUPER_ADMIN)) { ?>
+			<th scope="row"><?= __('Upload') ?></th>
+			<?php } ?>
+		</tr>
+		<?php
+		foreach ($formsNDocs as $val) { ?>
+		<tr>
+			<td><?= $val->has('client') ? $val->client->company_name : '' ?></td>
+			<td><a href="<?php echo $uploaded_path.$val->document;?>" target="_Blank"><?= $val->name ?></a></td>
+			<td class="text-center"><a href="<?php echo $uploaded_path.$val->document;?>" target="_Blank"><i class="fa fa-download"></i></a></td>
+			<?php if(isset($activeUser) && ($activeUser['role_id'] == CONTRACTOR || $activeUser['role_id'] == SUPER_ADMIN)) {?>
+				<td class="text-center"><?= $this->Html->link(__('<i class="fa fa-upload"></i>'), ['controller'=>'ContractorDocs', 'action'=>'add', $val->client_id, $val->id],['escape'=>false, 'class'=>'ajaxmodal', 'data-toggle'=>'modal', 'data-target'=>'#scrollmodal']) ?></td>
+			<?php } ?>
+		</tr>
+		<?php
+		}
+		?>
+		</table>
+	</div>
+	</div><!-- card -->
+	</div>
+
+
+	<?php if($activeUser['role_id'] == SUPER_ADMIN) { ?>
+	<div class="col-lg-6">
+	<div class="card">
+	<div class="card-header">
+		<strong>Reviews</strong>
+	</div>
+	<div class="card-body card-block">
+		<table class="table">
+		<tr>
+			<th scope="row"><?= __('Client') ?></th>
+			<th scope="row"><?= __('Category') ?></th>
+			<th scope="row"><?= __('Status') ?></th>
+		</tr>
+		<?php
+		foreach ($reviews as $review) { ?>
+		<tr>
+			<td><?= $review->has('client') ? $review->client->company_name : '' ?></td>
+			<td><?= $review->has('benchmark') ? $review->benchmark->category : $review->category ?></td>
+			<td><i class="fa fa-circle color-<?= $review->icon ?>"></i></td>
+		</tr>
+		<?php }	?>
+		</table>
+	</div>
+	</div><!-- card -->
+	</div>
+	<?php } ?>
+</div>
+
+<div class="modal fade" id="scrollmodal" tabindex="-1" role="dialog" aria-labelledby="scrollmodalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="scrollmodalLabel"></h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		</div>
+		<div class="modal-body">
+		</div>
+	</div>
+	</div>
+</div>

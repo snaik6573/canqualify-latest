@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f820949b-d774-480d-84ac-cd310b7b40f8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Template/CustomerRepresentative/send_invoice.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_checkbox.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_date.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_file.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_input.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_input_number.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_radio.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_range.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_select.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_select_naics_code.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_select_states.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Element/client_question_textarea.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Email/html/send_invoice.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Email/html/send_paid_invoice.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Layout/print.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Template/Payments/renew_invoice.ctp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webroot/uploads/invoice/ContractorInvoice_17.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/paths.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/paths.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ClientsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ClientsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Component/ExportComponent.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Component/ExportComponent.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ContractorsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ContractorsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CustomerRepresentativeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CustomerRepresentativeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OverallIconsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OverallIconsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PaymentsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PaymentsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UsersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UsersController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Mailer/UserMailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Mailer/UserMailer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/Entity/ClientQuestion.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Entity/ClientQuestion.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Clients/add.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Clients/add.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Contractors/dashboard.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Contractors/dashboard.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/CustomerRepresentative/contractor_list.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/CustomerRepresentative/contractor_list.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Layout/admin.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Layout/admin.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Layout/client.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Layout/client.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Layout/contractor.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Layout/contractor.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Layout/customerCR.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Layout/customerCR.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Layout/default.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Layout/default.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Layout/employee.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Layout/employee.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Leads/find_leads.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Leads/find_leads.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Template/Leads/view.ctp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Template/Leads/view.ctp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webroot/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/webroot/css/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webroot/js/custom.js" beforeDir="false" afterPath="$PROJECT_DIR$/webroot/js/custom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webroot/uploads/certificate/CanQualify Certificate of Membership.pdf" beforeDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="1384295002">
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="php" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="PHP" value="3" />
+        </counts>
+      </usages-collector>
+    </session>
+    <session id="-878422290">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.5" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="css" value="88" />
+          <entry key="ctp" value="292" />
+          <entry key="php" value="703" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="CSS" value="88" />
+          <entry key="PHP" value="995" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="css" value="3" />
+          <entry key="ctp" value="6" />
+          <entry key="map" value="2" />
+          <entry key="php" value="7" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="CSS" value="3" />
+          <entry key="PHP" value="13" />
+          <entry key="SourceMap" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/app.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="15" column="50" selection-start-line="15" selection-start-column="50" selection-end-line="15" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Controller/CustomerRepresentativeController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="52">
+              <caret line="121" selection-start-line="121" selection-end-line="121" />
+              <folding>
+                <element signature="e#33#66#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Controller/ContractorsController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="111">
+              <caret line="197" column="32" selection-start-line="197" selection-start-column="32" selection-end-line="197" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/edit.ctp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="287">
+              <caret line="60" column="10" selection-start-line="60" selection-start-column="10" selection-end-line="60" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/dashboard.ctp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webroot/css/custom.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="338">
+              <caret line="550" column="18" selection-start-line="550" selection-start-column="18" selection-end-line="550" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webroot/css/style.css">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/index.ctp">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Template/Layout/customerCR.ctp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="192">
+              <caret line="76" column="79" selection-start-line="76" selection-start-column="79" selection-end-line="76" selection-end-column="79" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/my_profile.ctp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-498" />
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>n getClients</find>
+      <find>aaa</find>
+      <find>getClients</find>
+      <find>getClientCategories</find>
+      <find>getParentcat</find>
+      <find>$contractorList</find>
+      <find>$customerRepresentative</find>
+      <find>BillingDetails</find>
+      <find>main-menu</find>
+      <find>text-light</find>
+      <find>$hasher</find>
+    </findStrings>
+    <replaceStrings>
+      <replace />
+    </replaceStrings>
+    <dirStrings>
+      <dir>C:\xampp\htdocs\canqualifier\src\Template</dir>
+      <dir>C:\xampp\htdocs\canqualifier\webroot</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="C:/Arundhati/qualifier_backup/demo/pgdevqualifier-19june2019.sql" />
+        <option value="$PROJECT_DIR$/src/Template/Layout/contractor.ctp" />
+        <option value="$PROJECT_DIR$/src/View/Helper/CategoryHelper.php" />
+        <option value="$PROJECT_DIR$/src/Template/Layout/customerCR.ctp" />
+        <option value="$PROJECT_DIR$/src/Controller/CustomerRepresentativeController.php" />
+        <option value="$PROJECT_DIR$/src/Template/CustomerRepresentative/edit.ctp" />
+        <option value="$PROJECT_DIR$/src/Template/CustomerRepresentative/dashboard.ctp" />
+        <option value="$PROJECT_DIR$/webroot/css/custom.css" />
+        <option value="$PROJECT_DIR$/config/app.php" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/webroot/vendors/animate.css/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/bootstrap/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/chosen/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/jquery-validation-unobtrusive/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/jquery-validation/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/babel-config/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/bundle/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/eslint-config-popper/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/popper/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/test-utils/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/test/package.json" />
+      <path value="$PROJECT_DIR$/webroot/vendors/popper.js/packages/tooltip/package.json" />
+    </packageJsonPaths>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/seld/jsonlint" />
+      <path value="$PROJECT_DIR$/vendor/phar-io/version" />
+      <path value="$PROJECT_DIR$/vendor/seld/phar-utils" />
+      <path value="$PROJECT_DIR$/vendor/phar-io/manifest" />
+      <path value="$PROJECT_DIR$/vendor/psy/psysh" />
+      <path value="$PROJECT_DIR$/vendor/zendframework/zend-diactoros" />
+      <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
+      <path value="$PROJECT_DIR$/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/vendor/asm89/twig-cache-extension" />
+      <path value="$PROJECT_DIR$/vendor/symfony/debug" />
+      <path value="$PROJECT_DIR$/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/pgbi/cakephp3-soft-delete" />
+      <path value="$PROJECT_DIR$/vendor/aptoma/twig-markdown" />
+      <path value="$PROJECT_DIR$/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/robmorgan/phinx" />
+      <path value="$PROJECT_DIR$/vendor/justinrainbow/json-schema" />
+      <path value="$PROJECT_DIR$/vendor/wyrihaximus/twig-view" />
+      <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/resource-operations" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/object-enumerator" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/recursion-context" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/exporter" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/environment" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/comparator" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/global-state" />
+      <path value="$PROJECT_DIR$/vendor/aura/intl" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/deep-copy" />
+      <path value="$PROJECT_DIR$/vendor/inimist/cakephp-captcha" />
+      <path value="$PROJECT_DIR$/vendor/umpirsky/twig-php-function" />
+      <path value="$PROJECT_DIR$/vendor/m1/env" />
+      <path value="$PROJECT_DIR$/vendor/jdorn/sql-formatter" />
+      <path value="$PROJECT_DIR$/vendor/jakub-onderka/php-console-color" />
+      <path value="$PROJECT_DIR$/vendor/jakub-onderka/php-console-highlighter" />
+      <path value="$PROJECT_DIR$/vendor/dnoegel/php-xdg-base-dir" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/squizlabs/php_codesniffer" />
+      <path value="$PROJECT_DIR$/vendor/ajgl/breakpoint-twig-extension" />
+      <path value="$PROJECT_DIR$/vendor/jasny/twig-extensions" />
+      <path value="$PROJECT_DIR$/vendor/mobiledetect/mobiledetectlib" />
+      <path value="$PROJECT_DIR$/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/vendor/phpspec/prophecy" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-common" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/type-resolver" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-code-coverage" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/phpunit-mock-objects" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-token-stream" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/debug_kit" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-text-template" />
+      <path value="$PROJECT_DIR$/vendor/josegonzalez/dotenv" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/chronos" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/bake" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/migrations" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/plugin-installer" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/cakephp" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/cakephp-codesniffer" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/matrix" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/complex" />
+      <path value="$PROJECT_DIR$/vendor/aws/Psr" />
+      <path value="$PROJECT_DIR$/vendor/aws/Aws" />
+      <path value="$PROJECT_DIR$/vendor/aws/GuzzleHttp" />
+      <path value="$PROJECT_DIR$/vendor/aws/JmesPath" />
+      <path value="$PROJECT_DIR$/vendor/setasign/fpdi" />
+      <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/vendor/phpmailer/phpmailer" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/vendor/mpdf/mpdf" />
+      <path value="$PROJECT_DIR$/vendor/friendsofcake/cakephp-csvview" />
+      <path value="$PROJECT_DIR$/vendor/friendsofcake/cakepdf" />
+      <path value="$PROJECT_DIR$/vendor/fpdf/fpdi" />
+      <path value="$PROJECT_DIR$/vendor/fpdf/fpdf" />
+    </include_path>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="240" />
+    <option name="y" value="125" />
+    <option name="width" value="1440" />
+    <option name="height" value="765" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="canqualifier" type="b2602c69:ProjectViewProjectNode" />
+              <item name="canqualifier" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="canqualifier" type="b2602c69:ProjectViewProjectNode" />
+              <item name="canqualifier" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="canqualifier" type="b2602c69:ProjectViewProjectNode" />
+              <item name="canqualifier" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="canqualifier" type="b2602c69:ProjectViewProjectNode" />
+              <item name="canqualifier" type="462c0819:PsiDirectoryNode" />
+              <item name="webroot" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="canqualifier" type="b2602c69:ProjectViewProjectNode" />
+              <item name="canqualifier" type="462c0819:PsiDirectoryNode" />
+              <item name="webroot" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/webroot" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f820949b-d774-480d-84ac-cd310b7b40f8" name="Default Changelist" comment="" />
+      <created>1560809390819</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1560809390819</updated>
+      <workItem from="1560809391942" duration="621000" />
+      <workItem from="1560888049634" duration="7223000" />
+      <workItem from="1561015301856" duration="4440000" />
+      <workItem from="1567657668592" duration="12145000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="12171000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25973153" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/Controller/CategoriesController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="16" column="20" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/Contractors/dashboard.ctp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/ContractorAnswersController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3706">
+          <caret line="223" column="99" selection-start-line="223" selection-start-column="99" selection-end-line="223" selection-end-column="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/Component/CategoryComponent.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Entity/Category.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Table/CategoriesTable.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Table/UsersTable.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-25" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Model/Entity/User.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-25" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/Layout/contractor.ctp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1156">
+          <caret line="80" column="48" selection-start-line="80" selection-start-column="35" selection-end-line="80" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/View/Helper/UserHelper.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="22" column="33" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/View/Helper/CategoryHelper.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="333" selection-start-line="333" selection-end-line="333" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/Users/login_as.ctp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="34" column="71" selection-start-line="34" selection-start-column="56" selection-end-line="34" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/UsersController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="287" column="19" selection-start-line="287" selection-start-column="4" selection-end-line="287" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/PaymentsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6">
+          <caret line="208" column="52" selection-start-line="208" selection-start-column="38" selection-end-line="208" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/ContractorUsersController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1734" />
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/stubs/Core/Core_d.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="298" column="9" selection-start-line="298" selection-start-column="9" selection-end-line="298" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/ContractorsController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="111">
+          <caret line="197" column="32" selection-start-line="197" selection-start-column="32" selection-end-line="197" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/my_profile.ctp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-498" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/CustomerRepresentativeController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="121" selection-start-line="121" selection-end-line="121" />
+          <folding>
+            <element signature="e#33#66#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/Layout/customerCR.ctp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="76" column="79" selection-start-line="76" selection-start-column="79" selection-end-line="76" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/index.ctp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webroot/vendors/bootstrap/dist/css/bootstrap-reboot.css.map">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="17759" selection-start-column="17759" selection-end-column="17759" />
+        </state>
+      </provider>
+      <provider editor-type-id="sourcemapFileViewerProvider" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webroot/vendors/bootstrap/dist/css/bootstrap-grid.css.map">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="55348" selection-start-column="55348" selection-end-column="55348" />
+        </state>
+      </provider>
+      <provider editor-type-id="sourcemapFileViewerProvider" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webroot/css/style.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/edit.ctp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="60" column="10" selection-start-line="60" selection-start-column="10" selection-end-line="60" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webroot/css/default.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8264">
+          <caret selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Template/CustomerRepresentative/dashboard.ctp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webroot/css/custom.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="550" column="18" selection-start-line="550" selection-start-column="18" selection-end-line="550" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/app.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="15" column="50" selection-start-line="15" selection-start-column="50" selection-end-line="15" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

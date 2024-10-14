@@ -1,0 +1,394 @@
+<?php
+namespace App\Controller\Component;
+use Cake\Controller\ComponentRegistry;
+use Cake\Controller\Component;
+use Cake\Controller\Controller;
+use Cake\Datasource\ConnectionManager;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
+
+class UserComponent extends Component {
+	public function getuser() {
+		$this->controller = $this->_registry->getController();
+		return $this->controller->getRequest()->getSession()->read('Auth.User');
+	}
+
+	public function isAdmin() {
+		$this->controller = $this->_registry->getController();
+		if($this->controller->getRequest()->getSession()->read('Auth.User.role') == 'Admin') {
+			return $this->controller->getRequest()->getSession()->read('Auth.User');
+		}
+		return false;
+	}
+
+	public function isClient() {
+		$this->controller = $this->_registry->getController();
+		$activeUser = $this->controller->getRequest()->getSession()->read('Auth.User');
+		if($activeUser['role']== 'Client' || $activeUser['role'] == 'Client-Admin' || $activeUser['role'] == 'Client-View') {
+			return $activeUser;
+		}
+		return false;
+	}
+
+	public function isContractor() {
+		$this->controller = $this->_registry->getController();
+		if($this->controller->getRequest()->getSession()->read('Auth.User.role') == 'Contractor') {
+			return $this->controller->getRequest()->getSession()->read('Auth.User');
+		}
+		return false;
+	}
+	public function isEmployee() {
+		$this->controller = $this->_registry->getController();
+		$activeUser = $this->controller->getRequest()->getSession()->read('Auth.User');
+		if($activeUser['role']== 'Employee') {
+			return $activeUser;
+		}
+		return false;
+	}
+
+	public function redirectOnlogin()
+	{
+		$this->controller = $this->_registry->getController();
+		$activeUser = $this->controller->getRequest()->getSession()->read('Auth.User');		
+		if($activeUser['role'] == 'Admin') {
+			return $this->controller->redirect(['action' => 'dashboard']);
+		}
+		elseif($activeUser['role'] == 'Contractor') {
+			if($activeUser['registration_status']==1) {
+				return $this->controller->redirect(['controller' => 'ContractorSites', 'action' => 'add']);
+			}
+			elseif($activeUser['registration_status']==2) {
+				return $this->controller->redirect(['controller' => 'Payments', 'action' => 'checkout']);
+			}
+			return $this->controller->redirect(['controller' => 'Contractors', 'action' => 'dashboard']);
+		}
+		elseif($activeUser['role'] == 'Client' || $activeUser['role'] == 'Client-Admin' || $activeUser['role'] == 'Client-View') {
+			return $this->controller->redirect(['controller' => 'Clients', 'action' => 'dashboard']);
+		}
+		elseif($activeUser['role'] == 'Employee') {
+			$this->Employees = TableRegistry::get('Employees');
+			$getEmployee = $this->Employees->find('all')->where(['id' => $activeUser['employee_id']])->first();
+			if($getEmployee['registration_status']==0) {
+				return $this->controller->redirect(['controller' => 'Employees', 'action' => 'myProfile']);
+			}
+			return $this->controller->redirect(['controller' => 'Employees', 'action' => 'dashboard']);
+		}
+		return false;
+	}
+
+	public function getClients($contractor_id=null)
+	{
+		$this->ContractorSites = TableRegistry::get('ContractorSites');
+
+		$contractorSites = $this->ContractorSites
+		->find()
+		->select('client_id')
+		->where(['contractor_id' => $contractor_id, 'Users.active'=>true])
+		->contain(['Contractors.Users'])
+		->distinct(['client_id']);
+
+		$clients = array();
+		foreach($contractorSites as $client) {
+			$clients[] = $client->client_id;
+		}
+		return $clients;
+	}
+
+	public function getContractors($client_id=null, $waitingStatus=array())
+	{
+		$this->ContractorSites = TableRegistry::get('ContractorSites');
+		$sites = $this->getClientSites($client_id);
+
+		$where = ['site_id IN' => array_keys($sites), 'Contractors.payment_status'=>true, 'Users.active'=>true];
+		if(!empty($waitingStatus)) {
+			$where['waiting_on IN'] = $waitingStatus;
+		}
+
+		$contractorSites = $this->ContractorSites
+		->find()
+		->select('contractor_id')
+		->where($where)
+		->contain(['Contractors.Users'])
+		->distinct(['contractor_id']);
+
+		$contractors = array();
+		foreach($contractorSites as $contractor) {
+			$contractors[] = $contractor->contractor_id;
+		}
+		return $contractors;
+	}
+
+	public function getClientSites($client_id=null)
+	{
+		$this->controller = $this->_registry->getController();
+		$activeUser = $this->controller->getRequest()->getSession()->read('Auth.User');
+
+		$this->Sites = TableRegistry::get('Sites');
+		$where[] = ['client_id'=>$client_id];
+		if(isset($activeUser['cadmin_sites']) && $activeUser['cadmin_sites']!='') {        
+			$site_ids = explode(',',$activeUser['cadmin_sites']);
+			$where['id IN'] = $site_ids;
+		}
+
+		if(isset($_SERVER['ENVIRONMENT']) && $_SERVER['ENVIRONMENT'] == 'production'){
+			$order = ['name'=>'ASC'];
+		}
+		else {
+			$order = ['id'=>'ASC'];
+		}
+		$sites = $this->Sites->find('list', ['keyField'=>'id', 'valueField'=>'name'])->where([$where])->order($order)->toArray();
+		return $sites;
+	}
+
+	public function getContractorSites($contractor_id=null)
+	{
+		$this->ContractorSites = TableRegistry::get('ContractorSites');
+		$contractorSites = $this->ContractorSites->find('list', ['keyField'=>'id', 'valueField'=>'site_id'])->where(['contractor_id'=>$contractor_id])->order(['id'=>'ASC'])->toArray();
+		return $contractorSites;
+	}
+
+	public function waiting_status()
+	{
+		$this->WaitingOn = TableRegistry::get('WaitingOn');
+		$waiting_on = $this->WaitingOn->find('list', ['keyField'=>'status', 'valueField'=>'status' ])->toArray();		
+		return $waiting_on;
+	}
+
+	public function isContractorAssigned() {
+		$isContractorAssigned = false;
+		if($this->isClient() && $this->controller->getRequest()->getSession()->read('Auth.User.role') !== 'Client-View') {
+			$client_id = $this->controller->getRequest()->getSession()->read('Auth.User.client_id');
+			$contractor_id = $this->controller->getRequest()->getSession()->read('Auth.User.contractor_id');
+			$client_contractors = $this->getContractors($client_id);
+			if(in_array($contractor_id, $client_contractors)) {
+				$isContractorAssigned = true;
+			}
+		}
+		return $isContractorAssigned;
+	}
+
+	public function update_contractor_ans($requestData=array(), $result=array()) {
+
+		$this->Questions = TableRegistry::get('Questions');
+		$this->Contractors = TableRegistry::get('Contractors');
+
+  		$states = $this->Contractors->States->find('list')->toArray();
+		//debug($requestData);
+		$contractor_id = $result->id;
+
+		$questions = $this->Questions
+		->find('list', ['keyField'=>'id', 'valueField'=>'question'])
+		->select(['id','question'])
+		->where(['show_on_register_form'=>true, 'active'=>true])
+		->order(['ques_order'=>'ASC','Questions.id'=>'ASC'])
+		->toArray();
+
+	foreach($questions as $key=>$val) {
+		$contractorAnswers = array();
+
+		if($val == 'Company name' && isset($requestData['company_name'])) { $contractorAnswers['answer'] = $requestData['company_name']; }
+		elseif($val == 'Address' && isset($requestData['addressline_1'])) { $contractorAnswers['answer'] = $requestData['addressline_1'].' '.$requestData['addressline_2']; }
+		elseif($val == 'City' && isset($requestData['city'])) { $contractorAnswers['answer'] = $requestData['city']; }
+		elseif($val == 'State' && isset($requestData['state_id'])) { $contractorAnswers['answer'] = $states[$requestData['state_id']]; }
+		elseif($val == 'Zip' && isset($requestData['zip'])) { $contractorAnswers['answer'] = $requestData['zip']; }
+		elseif($val == 'Primary Contact (title):' && isset($requestData['pri_contact_title'])) { $contractorAnswers['answer'] = $requestData['pri_contact_title']; }
+		elseif($val == 'Telephone' && isset($requestData['pri_contact_pn'])) { $contractorAnswers['answer'] = $requestData['pri_contact_pn']; }
+
+		if(!isset($contractorAnswers['answer'])) { continue; }
+
+		$contractorAnswers['question_id'] = $key;
+		$contractorAnswers['contractor_id'] = $contractor_id;
+		$contractorAnswers['created_by'] = $result->user->id;
+
+		$saveDt = $this->Contractors->ContractorAnswers->find('all', ['conditions'=>['contractor_id'=>$contractor_id, 'question_id'=>$key]])->first();	
+		if(empty($saveDt)) { // new answer
+			$saveDt = $this->Contractors->ContractorAnswers->newEntity();
+		}
+		$saveDt = $this->Contractors->ContractorAnswers->patchEntity($saveDt, $contractorAnswers);
+		$this->Contractors->ContractorAnswers->save($saveDt);
+	}
+	}
+
+	public function update_contractor($requestData=array(), $contractor_id=null) {
+
+		$this->Questions = TableRegistry::get('Questions');
+		$this->Contractors = TableRegistry::get('Contractors');
+
+  		$states = $this->Contractors->States->find('list')->toArray();
+		$contractor_id = $result->id;
+
+		$contractor = $this->Contractors->get($contractor_id);
+		//$contractor = $this->Contractors->patchEntity($contractor, $requestData);
+
+		debug($requestData);
+		die();
+		//$this->Contractors->save($contractor);
+	}
+	
+	public function revisedPayment($site_ids=null)
+	{
+		$this->controller = $this->_registry->getController();
+		$conn = ConnectionManager::get('default');			
+		
+		$invoice = array();		
+		$client_ids = array();
+		$contractor_id = $this->controller->getRequest()->getSession()->read('Auth.User.contractor_id');
+		
+		if($site_ids == null)
+		{
+			$getClients = $this->getClients($contractor_id);
+			$client_ids = $getClients;							
+		}	
+		else{		
+			if($site_ids!='') {
+			$getClients = $conn->execute('SELECT distinct client_id FROM sites WHERE id IN('.$site_ids.')')->fetchAll('assoc');			
+			foreach($getClients as $client) {
+				$client_ids[] = $client['client_id'];
+			}			
+			}
+		}		
+		if(!empty($client_ids)) {						
+			$serviceCnt = $conn->execute('SELECT count(services.id) as qty, services.id as service_id, services.name,client_services.client_id
+				FROM services 
+				LEFT JOIN client_services ON client_services.service_id = services.id
+				where client_services.client_id IN('.implode(',',$client_ids).') and services.active=true 
+				group by services.id, client_services.client_id');
+			
+			$totalPrice = 0;
+			$i = 0;
+			
+			foreach($serviceCnt as $service) {				
+				$invoice['services'][$i] = $service;
+				$products = $conn->execute('SELECT * from products
+				where service_id='.$service['service_id'].' and range_from<='.$service['qty'].' and range_to>='.$service['qty'])->fetchAll('assoc');
+				
+				$invoice['services'][$i]['pricing'] = $products[0]['pricing'];
+				$i ++;
+				$totalPrice = $totalPrice + $products[0]['pricing'];
+			}
+			$invoice['totalPrice'] = $totalPrice;
+		}
+		
+		return $invoice;
+	}
+
+	public function calculatePayment($site_ids=null,$finalPayment=0)
+	{
+		$this->controller = $this->_registry->getController();
+		$conn = ConnectionManager::get('default');			
+		
+		$invoice = array();		
+		$client_ids = array();
+		$contractor_id = $this->controller->getRequest()->getSession()->read('Auth.User.contractor_id');
+		
+		if($site_ids == null)
+		{
+			$getClients = $this->getClients($contractor_id);
+			$client_ids = $getClients;							
+		}	
+		else{		
+			if($site_ids!='') {
+			$getClients = $conn->execute('SELECT distinct client_id FROM sites WHERE id IN('.$site_ids.')')->fetchAll('assoc');			
+			foreach($getClients as $client) {
+				$client_ids[] = $client['client_id'];
+			}			
+			}
+		}		
+		if(!empty($client_ids)) {						
+		
+		if($finalPayment == 1)
+		{
+			$serviceCnt = $conn->execute('SELECT count(services.id) as qty, services.id as service_id, services.name, client_services.client_id
+				FROM services 
+				LEFT JOIN client_services ON client_services.service_id = services.id
+				where client_services.client_id IN('.implode(',',$client_ids).') and services.active=true 
+				group by services.id, client_services.client_id')->fetchAll('assoc');			
+		}
+		else {
+			$serviceCnt = $conn->execute('SELECT count(services.id) as qty, services.id as service_id, services.name
+				FROM services 
+				LEFT JOIN client_services ON client_services.service_id = services.id
+				where client_services.client_id IN('.implode(',',$client_ids).') and services.active=true 
+				group by services.id')->fetchAll('assoc');			
+		}				
+			
+			$totalPrice = 0;
+			$i = 0;
+			//echo "<pre>"; print_r($serviceCnt);
+			foreach($serviceCnt as $service) {				
+				$invoice['services'][$i] = $service;
+				$products = $conn->execute('SELECT * from products
+				where service_id='.$service['service_id'].' and range_from<='.$service['qty'].' and range_to>='.$service['qty'])->fetchAll('assoc');
+				
+				$invoice['services'][$i]['pricing'] = $products[0]['pricing'];
+				$i ++;
+				$totalPrice = $totalPrice + $products[0]['pricing'];
+			}
+			$invoice['totalPrice'] = $totalPrice;
+		}
+		
+		return $invoice;
+	}
+
+	public function finalPayment($site_ids=null)
+	{			
+		$this->controller = $this->_registry->getController();
+		$this->ContractorInvoices = TableRegistry::get('ContractorInvoices');		
+		$contractor_id = $this->controller->getRequest()->getSession()->read('Auth.User.contractor_id');
+		$paymentinfo = $this->calculatePayment($site_ids);
+
+
+		$contractor_invoices = $this->ContractorInvoices->find('list', ['keyField'=>'id', 'valueField'=>'service_id'])->where(['contractor_id'=>$contractor_id])->toArray();							
+		$totalPrice =0;
+		foreach($paymentinfo['services'] as $key=>$service)
+		{
+			if(in_array($service['service_id'],$contractor_invoices)){
+				unset($paymentinfo['services'][$key]);
+			}
+			else {
+				$totalPrice = $totalPrice + $service['pricing'];						
+			}
+		}
+		$paymentinfo['totalPrice'] = $totalPrice;
+		return $paymentinfo;
+	}
+
+	/*public function finalPayment($contractor_id=null, $site_ids=null, $temp_ids=null)
+	{
+		$this->Payments = TableRegistry::get('Payments');
+		$this->ContractorSites = TableRegistry::get('ContractorSites');
+		$this->ContractorTempsites = TableRegistry::get('ContractorTempsites');
+		
+		$currentPayment =0;
+		$totalprice = 0;	
+	
+		if($site_ids!='') {
+		$allSiteids = array_unique (array_merge ($site_ids, $temp_ids));	
+		$paymentInfo = $this->calculatePayment(implode(',', $allSiteids));		
+	
+		$contractorPayment = $this->Payments->find()->select(['contractor_id', 'totalPrice'])->where(['contractor_id'=>$contractor_id, 'p_ack'=>'Success'])->toArray(); // all sites
+		if(isset($contractorPayment) && !empty($contractorPayment)){
+			foreach($contractorPayment as $payments){
+				$currentPayment = $currentPayment + $payments['totalPrice'];
+				$totalprice = $paymentInfo['totalPrice'] - $currentPayment;
+			}
+			if( $totalprice == 0){	
+			$allcontractorSites = $this->ContractorTempsites->find('all')->where(['contractor_id'=>$contractor_id])->toArray(); // all sites								
+			$array = json_decode(json_encode($allcontractorSites), true);			
+				foreach($array as $key => $val) {
+					$saveDt = $this->ContractorSites->newEntity();					
+					$saveDt = $this->ContractorSites->patchEntity($saveDt, $val);									
+					$this->ContractorSites->save($saveDt);
+					}				
+				$this->ContractorTempsites->deleteAll(['contractor_id'=>$contractor_id]);		
+				return $this->redirect(['controller'=>'Contractors', 'action' => 'dashboard']);
+			}
+		}
+		else{		
+			$totalprice = $paymentInfo['totalPrice'];
+		}	
+		}
+		//echo "<pre>"; print_r($totalprice); die();
+		return $totalprice;
+	}*/
+}

@@ -1,0 +1,415 @@
+<?php
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+use Cake\Event\Event;
+use Cake\Routing\Router;
+use Cake\Core\Configure;
+
+use Cake\Mailer\MailerAwareTrait;       //  Built in function use for sending multiple email
+use Cake\Auth\DefaultPasswordHasher;
+use Cake\Utility\Security;
+/**
+ * Users Controller
+ *
+ * @property \App\Model\Table\UsersTable $Users
+ *
+ * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ */
+class UsersController extends AppController
+{
+    use MailerAwareTrait;
+
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+
+	$activeUser = $this->getRequest()->getSession()->read('Auth.User');
+	$this->set('activeUser', $activeUser);
+
+	if($activeUser['role'] == 'Admin') {
+		$this->viewBuilder()->setLayout('admin');	
+	}		
+	elseif($activeUser['role'] == 'Contractor') {
+		$this->viewBuilder()->setLayout('contractor');
+	}
+	elseif($activeUser['role'] == 'Client') {
+		$this->viewBuilder()->setLayout('client');
+	}
+    }
+    public function isAuthorized($user)
+    {
+	// Admin can access every action
+	if (isset($user['role_id']) && $user['active']==1) {
+		return true;
+	}
+
+	// Default deny
+	return false;
+    }
+
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|void
+     */
+    public function index()
+    {
+	if ($this->getRequest()->getSession()->read('Auth.User.role') != 'Admin'){
+		$this->Flash->error(__('You are not authorized to access that location.'));
+		$this->redirect($this->referer());
+	}
+
+        $this->paginate = [
+            'contain' => ['Roles']
+        ];
+        $users = $this->paginate($this->Users);
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->find()->where(['username' => $this->request->getData('username')])->first();
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+		if($user->active==1) {
+			$this->getMailer('User')->send('register', [$user]);
+		}
+                $this->Flash->success(__('The users has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        }
+
+        $this->set(compact('users'));
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id User id.
+     * @return \Cake\Http\Response|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $user = $this->Users->get($id, [
+            'contain' => ['Roles', 'Clients']
+        ]);
+
+        $this->set('user', $user);
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $user = $this->Users->newEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->created_by = $this->getRequest()->getSession()->read('Auth.User.id');
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The user has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        }
+        $roles = $this->Users->Roles->find('list', ['keyField' => 'id', 'valueField' => 'role_title']);
+        $this->set(compact('user', 'roles'));
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id User id.
+     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $user = $this->Users->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->modified_by = $this->getRequest()->getSession()->read('Auth.User.id');
+
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The user has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        }
+        $roles = $this->Users->Roles->find('list', ['keyField' => 'id', 'valueField' => 'role_title']);
+        $this->set(compact('user', 'roles'));
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id User id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+
+        $this->request->allowMethod(['post', 'delete']);
+        $user = $this->Users->get($id);
+        if ($this->Users->delete($user)) {
+            $this->Flash->success(__('The user has been deleted.'));
+        } else {
+            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
+    public function login()
+    {
+	$this->viewBuilder()->setLayout('login');
+
+	$cookie = ['username'=>'', 'password'=>'', 'remember_me'=>0];
+	if ($this->Cookie->read('cq_remember_me')) {
+		$cookie = $this->Cookie->read('cq_remember_me');
+	}
+
+    if ($this->request->is('post')) {
+	/*$user1 = $this->Users->find()->where(['username' => $this->request->getData('username'),'old_password' => sha1($this->request->getData('password'))])->first();
+	if($user1->old_password != '')
+	{
+		$hasher = new DefaultPasswordHasher();
+		$secret_key = Security::hash(Security::randomBytes(32), 'sha256', false);	
+		$user1->secret_key = $secret_key;
+		$this->Users->save($user1);
+		return $this->redirect(array("controller" => "Users","action" => "resetPassword", $secret_key));			 	
+	}*/
+
+	$user = $this->Auth->identify();
+	if ($user) {
+		if($user['active']==false) {
+			$this->Flash->error('User is not active.');
+			return $this->redirect(['action' => 'login']);
+		}
+
+		$this->Auth->setUser($user);
+		$id = $user['id'];
+		$userupdate = $this->Users->get($id, [
+			'contain' => []
+		]);
+		$userupdate->last_login = date(DATE_ATOM);
+		$this->Users->save($userupdate);			
+
+		// if remember_me
+		if($this->request->getData('remember_me') == 1)	{			
+			$this->Cookie->write('cq_remember_me', $this->request->getData());
+		}
+		else {
+			$this->Cookie->delete('cq_remember_me');
+		}
+
+		$role = $this->Users->Roles->get($user['role_id'])->toArray();
+		$this->getRequest()->getSession()->write('Auth.User.role', $role['role_title']);
+
+		if($role['role_title'] == 'Contractor') {
+			$getContractor = $this->Users->Contractors->find('all')
+			->select(['id','registration_status'])
+			->where(['user_id' => $user['id']])->first();
+
+		$this->getRequest()->getSession()->write('Auth.User.contractor_id', $getContractor->id);
+		$this->getRequest()->getSession()->write('Auth.User.registration_status', $getContractor->registration_status);
+
+			// get associated clients
+			$clients = $this->User->getClients($getContractor->id);
+
+			$this->getRequest()->getSession()->write('Auth.User.contractor_clients', $clients);
+		}
+		else if($role['role_title'] == 'Client') {
+			$getClient = $this->Users->Clients->find('all')->select(['id'])->where(['user_id' => $user['id']])->first();
+			$this->getRequest()->getSession()->write('Auth.User.client_id', $getClient->id);
+
+			$contractors = $this->User->getContractors($getClient->id);
+			$this->getRequest()->getSession()->write('Auth.User.client_contractors', $contractors);
+		}
+		$this->User->redirectOnlogin();
+     	}
+     	else { // if user
+		$this->Flash->error('Your username or password is incorrect.');
+   	}
+     	} // if post
+	else {
+		$this->User->redirectOnlogin();
+	}
+
+	$this->set(compact('cookie'));
+    }
+
+    public function forgotPassword()
+    {
+	$this->viewBuilder()->setLayout('login');
+
+        if ($this->request->is(['post'])) {
+
+            $user = $this->Users->findByUsername($this->request->getData('username'))->first();
+            if (empty($user)) {
+                $this->Flash->error('Sorry, this email address is not registered with us. If you still think you have already registered, please email us at support@canqualify.com. Our support team will help you further.');
+            } else {
+		$hasher = new DefaultPasswordHasher();
+		$secret_key = Security::hash(Security::randomBytes(32), 'sha256', false);	// Generate an API 'token'
+		//$secret = $hasher->hash($secret_key);		// Bcrypt the token so BasicAuthenticate can check it during login.
+
+		$user = $this->Users->patchEntity($user, $this->request->getData());
+		$user->secret_key = $secret_key;
+		if ($this->Users->save($user)) {
+			$url = Router::Url(['controller' => 'users', 'action' => 'reset-password'], true) . '/' . $secret_key;
+
+			$user->reset_url = $url;
+			$this->getMailer('User')->send('resetpassword', [$user]);
+
+			$this->Flash->success(__('Thank you for your patience.'));
+			return $this->redirect(['controller'=> 'users', 'action' => 'forgot-password']);
+		}
+		$this->Flash->error(__('The user could not be saved. Please, try again.'));
+            }
+	}
+    }
+
+    public function resetPassword($secretKey=null)
+    {
+	$this->viewBuilder()->setLayout('login');
+
+	$user = $this->Users->findBySecretKey($secretKey)->first();
+	//print_r($user); die();
+	if(empty($user)) {
+                return $this->redirect(['action' => 'login']);
+	}
+
+	if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->secret_key = '';
+			$user->old_password = '';
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('Password updated successfully!'));
+                return $this->redirect(['action' => 'login']);
+            }
+            $this->Flash->error(__('Password could not be updated. Please, try again.'));
+        }
+
+        $this->set(compact('user'));
+    }
+
+    public function register()
+    {
+	$this->loadModel('Contractors');
+	$this->viewBuilder()->setLayout('default');
+
+        $contractor = $this->Contractors->newEntity();
+        $usecaptcha = Configure::read('google_recatpcha_settings.usecaptcha');
+        if ($this->request->is('post')) {
+            if($usecaptcha==1 && !$this->verifyRecatpcha($this->request->getData()))
+            {
+                $this->Flash->error(__('Invalid Captcha. Please, try again.'),array('class' => 'alert alert-danger'));
+                return  $this->redirect(array("controller" => "Users","action" => "register"));
+            }
+
+            $contractor = $this->Contractors->patchEntity($contractor, $this->request->getData());
+            if ($this->Contractors->save($contractor)) {
+		//$this->getMailer('User')->send('register', [$contractor]);
+
+                $this->Flash->success(__('The contractor has been saved.'));
+                return $this->redirect(['action' => 'thankYou']);
+            }
+            $this->Flash->error(__('The contractor could not be saved. Please, try again.'));
+        }
+        $states = $this->Contractors->States->find('list');
+        $countries = $this->Contractors->Countries->find('list');
+        $this->set(compact('contractor', 'states', 'countries', 'usecaptcha'));
+    }
+
+    public function myProfile()
+    {
+	$id = $this->getRequest()->getSession()->read('Auth.User.id');
+	$user = $this->Users->get($id, [
+            'contain' => []
+        ]);
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->modified_by = $id;
+
+            if ($this->Users->save($user)) {
+                if(null !== $this->request->getData('password')){
+                    $this->Flash->success(__('Paswword has been updated successfully. Please, login again.'));
+		    return $this->redirect(['action' => 'logout']);
+                }
+                $this->Flash->success(__('Profile has been saved.'));
+		return $this->redirect(['action' => 'my-profile']);
+            }
+            $this->Flash->error(__('Profile could not be saved. Please, try again.'));
+        }
+        $this->set(compact('user'));
+    }
+
+    public function changePassword()
+    {
+	$id = $this->getRequest()->getSession()->read('Auth.User.id');
+	$user = $this->Users->get($id, [
+            'fields' => ['id','username'],
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {			
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->modified_by = $id;
+            if ($this->Users->save($user)) {
+                    $this->getRequest()->getSession()->destroy();
+                    $this->Flash->success(__('Paswword has been updated successfully. Please, login again.'));
+		    return $this->redirect(['action' => 'login']);
+            }
+            $this->Flash->error(__('Paswword could not be saved. Please, try again.'));
+        }
+        $this->set(compact('user'));
+    }
+
+    public function thankYou()
+    {
+	$this->viewBuilder()->setLayout('login');
+    }
+
+    public function logout()
+    {
+	$this->viewBuilder()->setLayout('login');
+
+	$this->Flash->success('You are now logged out.');
+	return $this->redirect($this->Auth->logout());
+    }
+
+    public function dashboard() //admin dashboard
+    {
+	$this->loadModel('Contractors');
+	$this->loadModel('Clients');
+
+	$contractors = $this->Contractors
+		->find()
+		->select(['company_name', 'addressline_1', 'addressline_2', 'city', 'state_id', 'country_id', 'zip', 'latitude', 'longitude'])
+		->contain(['States'=> ['fields'=>['name']]])
+		->contain(['Countries'=> ['fields'=>['name']]])
+		->all();
+
+	$clients = $this->Clients
+		->find()
+		->select(['id', 'company_name'])
+		->contain(['Sites'=> ['fields'=>['client_id', 'addressline_1', 'addressline_2', 'city', 'state_id', 'country_id', 'zip', 'latitude', 'longitude']]])
+		->contain(['Sites.States'=> ['fields'=>['name']]])
+		->contain(['Sites.Countries'=> ['fields'=>['name']]])
+		->all();
+
+	//echo '<pre>';
+	//print_r($clients);
+
+	$this->set(compact('contractors', 'clients'));
+    }
+}

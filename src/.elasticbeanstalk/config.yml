@@ -1,0 +1,20 @@
+branch-defaults:
+  default:
+    environment: canqualify-env-stage
+environment-defaults:
+  canqualify-env-stage:
+    branch: stage
+    repository: canqualify-repo
+global:
+  application_name: canQualify-beta
+  default_ec2_keyname: null
+  default_platform: arn:aws:elasticbeanstalk:us-east-1::platform/PHP 7.2 running on
+    64bit Amazon Linux/2.8.5
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  sc: null
+  workspace_type: Application
